@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEright Automations — Enterprise AI Command Center</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(22, 30, 49, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f8fafc;
+      --subtext: #94a3b8;
+      
+      /* Vibrant Glow Palettes */
+      --cyan: #06b6d4;
+      --violet: #8b5cf6;
+      --pink: #ec4899;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      
+      --gradient-main: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%);
+      --gradient-btn: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 30px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header & Branding */
+    .brand-header {
+      text-align: center;
+      position: relative;
+    }
+    .brand-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 20px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+    .brand-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .brand-subtitle {
+      color: var(--subtext);
+      font-size: 14px;
+    }
+
+    /* Metric Indicator Badges */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .metric-card.active { border-left: 4px solid var(--emerald); }
+    .metric-card.groq { border-left: 4px solid var(--violet); }
+    .metric-card.workspace { border-left: 4px solid var(--cyan); }
+    .metric-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-online { background: var(--emerald); box-shadow: 0 0 10px var(--emerald); }
+    .dot-groq { background: var(--violet); box-shadow: 0 0 10px var(--violet); }
+    .dot-cyan { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+    .metric-info h4 { font-size: 12px; color: var(--subtext); font-weight: 500; text-transform: uppercase; }
+    .metric-info p { font-size: 14px; font-weight: 700; color: #fff; margin-top: 2px; }
+
+    /* Interactive Command Panel */
+    .main-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(16px);
+    }
+    label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--subtext);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(9, 13, 22, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.25);
+    }
+    textarea {
+      height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    /* Action Chips */
+    .preset-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      margin-bottom: 10px;
+    }
+    .preset-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .preset-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .preset-chip:hover {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: var(--cyan);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Submit Button */
+    .btn-run {
+      width: 100%;
+      background: var(--gradient-btn);
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      color: #090d16;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(6, 182, 212, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-run:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.45);
+    }
+    .btn-run:disabled {
+      background: #334155;
+      color: #64748b;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Dynamic Output Stage */
+    .output-panel {
+      margin-top: 20px;
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      display: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .state-running {
+      display: block;
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid rgba(14, 165, 233, 0.4);
+      color: #7dd3fc;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    .state-success {
+      display: block;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #a7f3d0;
+    }
+    .state-error {
+      display: block;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="brand-header">
+    <div class="brand-badge">Autonomous Workspace OS</div>
+    <h1 class="brand-title">BEright Automations</h1>
+    <p class="brand-subtitle">Natural Language Agent Control Center for Google Workspace</p>
+  </div>
+
+  <!-- Realtime Metric Status -->
+  <div class="metric-grid">
+    <div class="metric-card active">
+      <div class="metric-dot dot-online"></div>
+      <div class="metric-info">
+        <h4>Agent Status</h4>
+        <p>Active & Ready</p>
+      </div>
+    </div>
+    <div class="metric-card groq">
+      <div class="metric-dot dot-groq"></div>
+      <div class="metric-info">
+        <h4>AI Engine</h4>
+        <p>Groq Llama 3.3 70B</p>
+      </div>
+    </div>
+    <div class="metric-card workspace">
+      <div class="metric-dot dot-cyan"></div>
+      <div class="metric-info">
+        <h4>Integrations</h4>
+        <p>Full Google Suite</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Interactive Command Card -->
+  <div class="main-card">
+    <label for="webhookUrl">Google Apps Script Webhook URL</label>
+    <input type="text" id="webhookUrl" placeholder="https://script.google.com/macros/s/AKfycbysfawnP5i5ycL6AOm97DKH8ahYhpiFa9c9bo_qrgC7cs_vejjdkRAWklw7ib96OcJc/exec" style="margin-bottom: 20px;">
+
+    <div class="preset-label-row">
+      <label>1-Click Action Presets</label>
+    </div>
+    <div class="preset-container">
+      <div class="preset-chip" onclick="applyPreset('Build a complete inventory system in my Google Sheets with Dashboard, Items, and Log tabs.')">
+        📦 Build Inventory System
+      </div>
+      <div class="preset-chip" onclick="applyPreset('Build a complete CRM lead pipeline in my Google Sheets with sample deals.')">
+        👥 Build CRM Tracker
+      </div>
+      <div class="preset-chip" onclick="applyPreset('Search my unread emails from the last 24 hours and summarize them.')">
+        🔍 Scan Unread Gmail
+      </div>
+      <div class="preset-chip" onclick="applyPreset('Create a Google Doc proposal for Web Development and AI Automation services with complete pricing.')">
+        📄 Generate Services Proposal Doc
+      </div>
+      <div class="preset-chip" onclick="applyPreset('Draft an email to client@example.com with subject Project Milestone 1 Complete and congratulations body text.')">
+        ✉️ Draft Milestone Email
+      </div>
+    </div>
+
+    <label for="prompt">Executive Prompt / Instruction</label>
+    <textarea id="prompt" placeholder="Describe the task... e.g., 'Build an inventory tracker in my Google Sheets without me touching anything'"></textarea>
+
+    <button class="btn-run" id="btnRun" onclick="dispatchAgent()">⚡ Execute Autonomous Action</button>
+
+    <div id="outputStage" class="output-panel"></div>
+  </div>
+
+</div>
+
+<script>
+  // Persist Webhook URL in localStorage
+  const webhookInput = document.getElementById('webhookUrl');
+  webhookInput.value = localStorage.getItem('beright_webhook_url') || '';
+  webhookInput.addEventListener('change', () => {
+    localStorage.setItem('beright_webhook_url', webhookInput.value.trim());
+  });
+
+  function applyPreset(text) {
+    document.getElementById('prompt').value = text;
+  }
+
+  async function dispatchAgent() {
+    const url = webhookInput.value.trim();
+    const prompt = document.getElementById('prompt').value.trim();
+    const output = document.getElementById('outputStage');
+    const btn = document.getElementById('btnRun');
+
+    if (!url) {
+      alert("Please paste your Google Apps Script Web App URL first.");
+      return;
+    }
+    if (!prompt) {
+      alert("Please enter a command or select a preset.");
+      return;
+    }
+
+    localStorage.setItem('beright_webhook_url', url);
+
+    // UI State: Running
+    btn.disabled = true;
+    output.className = "output-panel state-running";
+    output.textContent = "⚡ Agent dispatched: Groq (Llama 3.3 70B) is selecting Workspace tools and modifying your Google files...";
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ prompt: prompt, chatId: "command_center" })
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        output.className = "output-panel state-success";
+        output.textContent = data.response;
+      } else {
+        output.className = "output-panel state-error";
+        output.textContent = "❌ Execution Error: " + data.message;
+      }
+    } catch (err) {
+      output.className = "output-panel state-error";
+      output.textContent = "❌ Connection Failed: " + err.message + "\n\nTip: Ensure your Web App was deployed with 'Who has access: Anyone'.";
+    } finally {
+      btn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>
